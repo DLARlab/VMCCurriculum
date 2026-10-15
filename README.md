@@ -6,7 +6,7 @@
 ## Overview
 
 This file documents the policy train for a quadrupedal called go2 from Unitree with Jumping.
-
+![Alt text](figures/Figure4.png)
 Introduction:
 
 This paper presents a virtual model control (VMC)-guided curriculum that uses temporary mechanical assistance to facilitate this exploration.
