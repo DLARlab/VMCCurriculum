@@ -46,34 +46,6 @@ cd ~/VMCCurriculum/legged_gym && pip install -e .
 cd ~/VMCCurriculum && pip install -r requirements.txt
 ```
 
-### Dependencies
-
-Please place the three packages, unitree_guide, unitree_ros, and unitree_ros_to_real in our repository in a ROS workspace’s source directory.
-
-## build
-
-Open a terminal and switch the directory to the ros workspace containing unitree_guide, then run the following command to build the project:
-```
-catkin_make
-```
-
-## run
-
-In the same terminal, run the following command step by step:
-```
-source ./devel/setup.bash
-```
-To open the gazebo simulator, run:
-```
-roslaunch unitree_guide gazeboSim.launch 
-```
-
-For starting the controller, open an another terminal and switch to the same directory,  then run the following command:
-```
-./devel/lib/unitree_guide/junior_ctrl
-```
-
-
 ## Training
 1. To train an upwards jumping policy simply run:
 ```
