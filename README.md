@@ -20,8 +20,6 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author: Jing Cheng, Xulin Chen, Yasser G. Alqaham, Jun Zhou, Garrett E. Katz, and Zhenyu Gan<br />
 Affiliation: [DLAR Lab](https://dlarlab.syr.edu)<br />
-Maintainer: Jing Cheng, jcheng13@syr.edu />**
-With contributions by: Unitree(https://github.com/unitreerobotics/unitree_guide)
 
 This project was initially developed at Syracuse University (Dynamic Locomotion and Robotics Lab).
 
@@ -80,7 +78,7 @@ For starting the controller, open an another terminal and switch to the same dir
 1. To train an upwards jumping policy simply run:
 ```
 cd ~/VMCCurriculum/legged_gym/scripts
-WANDB_MODE=online WANDB_PROJECT=curri_jumping python train.py --max_iterations 6000 --task go2_gap --headless
+WANDB_MODE=online WANDB_PROJECT=gap_jumping python train.py --max_iterations 6000 --task go2_gap --headless
 
 2. Then use the the follow code verify the result 
 python play_go2.py --task go2_gap --load_run RUN_ID
