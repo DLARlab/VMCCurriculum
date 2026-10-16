@@ -47,14 +47,23 @@ cd ~/VMCCurriculum && pip install -r requirements.txt
 ```
 
 ## Training
-1. To train an upwards jumping policy simply run:
+1. To train an long jumping policy simply run:
 ```
 cd ~/VMCCurriculum/legged_gym/scripts
 WANDB_MODE=online WANDB_PROJECT=gap_jumping python train.py --max_iterations 6000 --task go2_gap --headless
+```
+
+or an height jumping run:
+
+```
+WANDB_MODE=online WANDB_PROJECT=box_jumping python train.py --max_iterations 15000 --task go2_box --headless
+```
 
 2. Then use the the follow code verify the result 
-python play_go2.py --task go2_gap --load_run RUN_ID
 
+```
+python play_go2.py --task go2_gap/go2_box --load_run RUN_ID
+```
 
 ## Acknowledgments
 
@@ -64,6 +73,5 @@ This code base builds on the following works:
 - [walk-these-ways-go2](https://github.com/Teddy-Liao/walk-these-ways-go2) — Teddy Liao
 - [Curriculum-Quadruped-Jumping-DRL](https://github.com/vassil-atn/Curriculum-Quadruped-Jumping-DRL) — Vassil Atanassov
 
-Special thanks to Vassil Atanassov for the online guide that helped me get this
-project running.
+Special thanks to Vassil Atanassov for the online guide that helped me get this project running.
 ```
