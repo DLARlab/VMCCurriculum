@@ -513,6 +513,12 @@ class Go2JumpCfgPPO( LeggedRobotCfgPPO ):
         entropy_coef = 0.01
         max_grad_norm = 1.0
         clip_param = 0.2 # PPO clip parameter
+        # Bounds for the adaptive-KL learning-rate controller. Stated explicitly so this
+        # task does not depend on PPO's defaults; these are the values that were hard-coded
+        # in ppo.py before they became configurable, so gap behaviour is unchanged.
+        # The box task deliberately uses a lower ceiling -- see go2_box_config.py.
+        max_learning_rate = 1.e-2
+        min_learning_rate = 1.e-5
     class runner( LeggedRobotCfgPPO.runner ):
         # policy_class_name = 'ActorCriticRecurrent'
         # policy_class_name = 'ActorCritic'

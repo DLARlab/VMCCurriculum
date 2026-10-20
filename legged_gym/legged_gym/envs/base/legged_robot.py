@@ -3204,7 +3204,51 @@ class LeggedRobot(BaseTask):
         if torch.all(active == False):
             return rew
 
-        forward_error = self.root_states[:, 0] - self.vf_assist.desired_x_log
+        # Box terrain recomputes desired_x here instead of reading the value logged inside
+        # compute_and_apply. The two differ by one control step: compute_and_apply writes
+        # desired_x_log *before* advancing trajectory_timer, so recomputing here uses the
+        # already-advanced timer. This reproduces the source project's box behaviour
+        # exactly; gap terrain keeps reading the logged value and is untouched.
+        terrain_kwargs = getattr(self.cfg.terrain, "terrain_kwargs", {}) or {}
+        if self.jump_type == "forward_with_obstacles" and terrain_kwargs.get("type") == "box_terrain":
+            default_duration = float(getattr(self.cfg.domain_rand, "vf_parabola_duration", 0.6))
+            duration = getattr(self.vf_assist, "trajectory_duration", None)
+            if duration is None:
+                duration = torch.full((self.num_envs,), default_duration, device=self.device)
+            # VirtualForceAssist zeroes trajectory_duration outside an active trajectory and
+            # only fills it at onset, whereas the source project held it at the configured
+            # value at all times. Restore that here so phase does not depend on the ordering
+            # of those two assignments (compute_and_apply applies the same fallback).
+            duration = torch.where(
+                duration > 0.0, duration, torch.full_like(duration, default_duration)
+            ).clamp(min=1e-6)
+            phase = (self.vf_assist.trajectory_timer / duration).clamp(0.0, 1.0)
+            x0 = self.initial_root_states[:, 0]
+            x2 = self.initial_root_states[:, 0] + self.commands[:, 0]
+            travel_x = self.commands[:, 0]
+            travel_abs = torch.abs(travel_x).clamp(min=1e-6)
+            travel_sign = torch.sign(travel_x)
+            travel_sign[travel_sign == 0.0] = 1.0
+            near_edge_dist = torch.full_like(travel_abs, float(getattr(self.cfg.env, "box_start_margin", 0.5))).clamp(max=travel_abs)
+            apex_dist = near_edge_dist + float(getattr(self.cfg.domain_rand, "vf_apex_box_edge_offset", 0.0))
+            apex_phase = (apex_dist / travel_abs).clamp(0.10, 0.90)
+            apex_x = x0 + travel_sign * apex_dist.clamp(max=travel_abs)
+            denom = (2.0 * (1.0 - apex_phase) * apex_phase).clamp(min=1e-6)
+            x1 = (
+                apex_x
+                - (1.0 - apex_phase) * (1.0 - apex_phase) * x0
+                - apex_phase * apex_phase * x2
+            ) / denom
+            one_minus_phase = 1.0 - phase
+            desired_x = (
+                one_minus_phase * one_minus_phase * x0
+                + 2.0 * one_minus_phase * phase * x1
+                + phase * phase * x2
+            )
+        else:
+            desired_x = self.vf_assist.desired_x_log
+
+        forward_error = self.root_states[:, 0] - desired_x
         height_error = self.root_states[:, 2] - self.vf_assist.desired_height_log
         weighted_error = (
             self.cfg.rewards.torso_trajectory_x_weight * torch.square(forward_error)

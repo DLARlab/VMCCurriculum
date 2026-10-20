@@ -536,7 +536,9 @@ class Go2BoxCfgPPO( LeggedRobotCfgPPO ):
         # learning_rate, which the controller reaches within one iteration whenever KL is
         # low - i.e. exactly when training looks converged. One update at 10x LR is what
         # collapsed the Sep28 run at iteration 9535.
+        # Value carried over from the source project; the gap task keeps the looser 1e-2.
         max_learning_rate = 2.e-3
+        min_learning_rate = 1.e-5
     class runner( LeggedRobotCfgPPO.runner ):
         # policy_class_name = 'ActorCriticRecurrent'
         # policy_class_name = 'ActorCritic'

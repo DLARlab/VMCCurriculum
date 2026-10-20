@@ -56,7 +56,7 @@ WANDB_MODE=online WANDB_PROJECT=gap_jumping python train.py --max_iterations 600
 or an height jumping run:
 
 ```
-WANDB_MODE=online WANDB_PROJECT=box_jumping python train.py --max_iterations 15000 --task go2_box --headless
+WANDB_MODE=online WANDB_PROJECT=box_jumping python train.py --max_iterations 15000 --task go2_box --headless --num_envs 4096
 ```
 
 2. Then use the the follow code verify the result 
@@ -74,4 +74,3 @@ This code base builds on the following works:
 - [Curriculum-Quadruped-Jumping-DRL](https://github.com/vassil-atn/Curriculum-Quadruped-Jumping-DRL) — Vassil Atanassov
 
 Special thanks to Vassil Atanassov for the online guide that helped me get this project running.
-```

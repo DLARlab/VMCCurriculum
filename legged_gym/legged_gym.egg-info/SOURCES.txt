@@ -17,3 +17,4 @@ legged_gym/utils/math.py
 legged_gym/utils/motor_model.py
 legged_gym/utils/task_registry.py
 legged_gym/utils/terrain.py
+legged_gym/utils/virtual_force.py
